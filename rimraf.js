@@ -244,5 +244,17 @@ function rmkidsSync (p, options) {
   options.readdirSync(p).forEach(function (f) {
     rimrafSync(path.join(p, f), options)
   })
-  options.rmdirSync(p, options)
+
+  try {
+    options.rmdirSync(p, options)
+  } catch(e) {
+    if (e && /no such file or directory/.test(e.message)) {
+      console.log(e.message);
+    } else if (e && /directory not empty/.test(e.message)) {
+      console.log(e.message);
+      rmdirSync (p, options);
+    } else {
+      throw e;
+    }
+  }
 }
